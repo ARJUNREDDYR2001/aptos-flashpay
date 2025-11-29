@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono, Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+import ChatbotWidget from "@/components/ChatbotWidget"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -41,6 +42,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="dark">
       <body className={`font-sans antialiased ${_inter.variable}`}>
         {children}
+        <ChatbotWidget />
         <Analytics />
       </body>
     </html>
