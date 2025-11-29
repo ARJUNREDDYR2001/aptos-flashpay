@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { getAptosWallet } from "@/lib/wallet";
 import { addReward } from "@/lib/rewards";
+import { Copy } from "lucide-react";
 
 export default function ConnectAndPay({ paylink }: { paylink: any }) {
   const [address, setAddress] = useState("");
@@ -126,15 +127,29 @@ const payNow = async () => {
       {!address ? (
         <button
           onClick={connectWallet}
-          className="w-full bg-accent text-accent-foreground px-6 py-3 rounded-xl"
+          className="w-full bg-accent text-accent-foreground px-6 py-3 rounded-xl hover:bg-accent/90 transition-colors"
         >
           Connect Wallet
         </button>
       ) : (
-        <p className="text-sm text-muted-foreground">
-          Connected:{" "}
-          <span className="font-mono text-foreground">{address}</span>
-        </p>
+        <div className="space-y-2">
+          <p className="text-sm font-semibold text-green-500 flex items-center gap-2">
+            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+            Wallet Connected
+          </p>
+          <div className="bg-white/5 p-3 rounded-lg break-all font-mono text-sm">
+            {address}
+          </div>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(address);
+              // Optional: Show copied message
+            }}
+            className="text-xs text-muted-foreground hover:text-accent transition-colors flex items-center gap-1"
+          >
+            <Copy size={12} /> Copy Address
+          </button>
+        </div>
       )}
 
       <button

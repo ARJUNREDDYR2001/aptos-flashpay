@@ -75,71 +75,77 @@ export default function PaymentStatusPage() {
   return (
     <div>
       <Navbar />
-      <div className="max-w-2xl mx-auto pt-24 pb-12 px-4">
-        <h1 className="text-3xl font-bold mb-6 text-accent">Payment Request</h1>
+      <div className="max-w-4xl mx-auto pt-24 pb-12 px-4">
+        <h1 className="text-3xl font-bold mb-8 text-accent text-center">Payment Request</h1>
 
-        <div className="bg-glass p-6 sm:p-8 rounded-3xl border border-accent/20 shadow-xl space-y-6">
-          {/* QR + Copy */}
-          <div className="flex flex-col items-center gap-4 py-2">
-            <div className="p-4 bg-white rounded-xl shadow-lg">
-              <QRCode 
-                value={paymentUrl}
-                size={180}
-                level="H"
-                fgColor="#000000"
-                bgColor="#ffffff"
-              />
+        <div className="bg-glass p-6 rounded-2xl border border-accent/20 shadow-xl">
+          {/* Top Section - QR Code and Connect Wallet Side by Side */}
+          <div className="flex flex-col md:flex-row gap-8 mb-8">
+            {/* Left - QR Code */}
+            <div className="w-full md:w-1/2 flex flex-col items-center">
+              <div className="p-4 bg-white rounded-xl shadow-lg">
+                <QRCode 
+                  value={paymentUrl}
+                  size={180}
+                  level="H"
+                  fgColor="#000000"
+                  bgColor="#ffffff"
+                />
+              </div>
+              <button
+                onClick={copyToClipboard}
+                className="mt-4 w-full max-w-[200px] flex items-center justify-center gap-2 px-4 py-2 border border-accent/30 rounded-xl hover:bg-accent/10 transition-colors"
+              >
+                <Copy size={16} />
+                Copy PayLink
+              </button>
+              {copyMsg && (
+                <p className="mt-2 text-sm text-green-500">{copyMsg}</p>
+              )}
             </div>
 
-            <button
-              onClick={copyToClipboard}
-              className="flex items-center gap-2 px-4 py-2 border border-accent/30 rounded-xl hover:bg-accent/10 transition-colors"
+            {/* Right - Connect & Pay */}
+            <div className="w-full md:w-1/2">
+              <div className="bg-white/5 p-6 rounded-xl h-full">
+                <h3 className="text-xl font-semibold mb-6 text-center">Complete Payment</h3>
+                <div className="flex justify-center">
+                  <ConnectAndPay paylink={paylink} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Section - Payment Details */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            <div className="bg-white/5 p-4 rounded-xl">
+              <p className="text-sm text-muted-foreground mb-1">Amount</p>
+              <p className="text-xl font-bold">
+                {paylink.amount} {paylink.currency}
+              </p>
+            </div>
+
+            <div className="bg-white/5 p-4 rounded-xl">
+              <p className="text-sm text-muted-foreground mb-1">Vendor Address</p>
+              <p className="text-sm font-mono break-all">{paylink.vendorAddress}</p>
+            </div>
+
+            <div className="bg-white/5 p-4 rounded-xl">
+              <p className="text-sm text-muted-foreground mb-1">Status</p>
+              <p className={`font-semibold ${paylink.status === "paid" ? "text-green-500" : "text-yellow-500"}`}>
+                {paylink.status}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <Link
+              href="/merchant-dashboard"
+              className="inline-flex items-center gap-1 text-sm text-accent hover:underline"
             >
-              <Copy size={18} />
-              Copy PayLink
-            </button>
-
-            {copyMsg && (
-              <p className="text-sm text-green-500">{copyMsg}</p>
-            )}
-
-            <p className="text-sm text-muted-foreground">
-              Scan or share this link to pay
-            </p>
+              <span>←</span> Back to Dashboard
+            </Link>
           </div>
-
-          <div>
-            <p className="text-sm text-muted-foreground">Amount</p>
-            <p className="text-2xl font-bold">
-              {paylink.amount} {paylink.currency}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm text-muted-foreground">Vendor Address</p>
-            <p className="font-mono text-sm">{paylink.vendorAddress}</p>
-          </div>
-
-          <div>
-            <p className="text-sm text-muted-foreground">Status</p>
-            <p
-              className={`font-semibold ${
-                paylink.status === "paid" ? "text-green-500" : "text-yellow-500"
-              }`}
-            >
-              {paylink.status}
-            </p>
-          </div>
-
-          <ConnectAndPay paylink={paylink} />
         </div>
-
-        <Link
-          href="/merchant-dashboard"
-          className="inline-block mt-6 text-accent underline"
-        >
-          Go to dashboard
-        </Link>
       </div>
     </div>
   );
