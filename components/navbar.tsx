@@ -10,7 +10,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group relative">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg overflow-hidden">
+            <div className="w-20 h-20  rounded-lg overflow-hidden">
               <img 
                 src="/image.png" 
                 alt="FlashPay Logo" 
