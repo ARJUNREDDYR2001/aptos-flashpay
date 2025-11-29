@@ -44,9 +44,9 @@ export default function PaymentStatusPage() {
     loadPaymentLink();
   }, [id]);
 
-  // IMPORTANT: Use production domain
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-    (typeof window !== 'undefined' ? window.location.origin : '');
+  // Use environment variable or current origin
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 
+    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
 
   const paymentUrl = `${baseUrl}/payment-status/${id}`;
 
