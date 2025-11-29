@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getAptosWallet } from "@/lib/wallet";
+import { addReward } from "@/lib/rewards";
 
 export default function ConnectAndPay({ paylink }: { paylink: any }) {
   const [address, setAddress] = useState("");
@@ -100,15 +101,18 @@ const payNow = async () => {
       },
     });
 
-    // Update local storage first
-    const list = JSON.parse(localStorage.getItem("flashpay_links") || "[]");
+    // Update local storage
+    const list = JSON.parse(globalThis.localStorage.getItem("flashpay_links") || "[]");
     const update = list.map((p: any) =>
       p.id === paylink.id ? { ...p, status: "paid", txHash: tx.hash } : p
     );
-    localStorage.setItem("flashpay_links", JSON.stringify(update));
+    globalThis.localStorage.setItem("flashpay_links", JSON.stringify(update));
+
+    // Add reward points for successful payment
+    addReward("payment_completed", 10);
 
     // Redirect to success page with transaction details
-    window.location.href = `/success?tx=${tx.hash}&amount=${paylink.amount}&vendor=${encodeURIComponent(paylink.vendorAddress || 'Vendor')}`;
+    globalThis.window.location.href = `/success?tx=${tx.hash}&amount=${paylink.amount}&vendor=${encodeURIComponent(paylink.vendorAddress || 'Vendor')}`;
 
   } catch (err) {
     console.error("TX ERROR:", err);

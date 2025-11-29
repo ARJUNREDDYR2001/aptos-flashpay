@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense } from 'react';
 import { HiCheckCircle } from "react-icons/hi2";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export default function SuccessPage() {
+function SuccessContent() {
   const params = useSearchParams();
   const router = useRouter();
 
@@ -59,5 +60,17 @@ export default function SuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }

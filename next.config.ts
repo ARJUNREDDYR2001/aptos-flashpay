@@ -13,24 +13,17 @@ type NextConfig = {
 };
 
 const nextConfig: NextConfig = {
-  // Turbopack configuration
-  turbopack: {
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "."),
-      },
-    },
-  },
-  
-  // Webpack configuration (kept for compatibility)
+  // Webpack configuration
   webpack: (config: WebpackConfig) => {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
-      ...(config.resolve.alias || {}),
+      ...config.resolve.alias,
       "@": path.resolve(__dirname, "."),
     };
     return config;
   },
+  // Empty Turbopack config to prevent build errors
+  turbopack: {}
 };
 
 export default nextConfig;

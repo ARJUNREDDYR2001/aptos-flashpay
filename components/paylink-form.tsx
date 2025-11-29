@@ -3,6 +3,9 @@
 import type React from "react";
 
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/navigation";
+import { addReward } from "@/lib/rewards";
 import { HiArrowRight } from "react-icons/hi2";
 
 interface PayLinkFormProps extends React.PropsWithChildren {
@@ -17,9 +20,14 @@ export default function PayLinkForm({ onSubmit }: PayLinkFormProps) {
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const currency = "APT"; // Hardcoded to APT
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    // Add reward points for creating a paylink
+    addReward("paylink_created", 2);
+    
+    const id = uuidv4();
+    router.push(`/payment-status/${id}`);
     if (!amount) return;
 
     setLoading(true);

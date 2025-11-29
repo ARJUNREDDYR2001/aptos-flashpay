@@ -44,15 +44,41 @@ export default function Navbar() {
 
           {/* Nav Links - Desktop */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-m text-muted-foreground hover:text-foreground transition-colors">
+            <Link 
+              href="/" 
+              className="text-[20px] text-white hover:text-accent transition-colors duration-200 relative group"
+            >
+              Home
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            <Link 
+              href="/#features" 
+              className="text-[20px] text-white hover:text-accent transition-colors duration-200 relative group"
+              onClick={(e) => {
+                if (window.location.pathname === '/') {
+                  e.preventDefault();
+                  const features = document.getElementById('features');
+                  features?.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
               Features
-            </a>
-            <a href="#" className="text-md text-muted-foreground hover:text-foreground transition-colors">
-              Docs
-            </a>
-            <a href="#" className="text-md text-muted-foreground hover:text-foreground transition-colors">
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            <Link 
+              href="/community" 
+              className="text-[20px] text-white hover:text-accent transition-colors duration-200 relative group"
+            >
               Community
-            </a>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            <Link 
+              href="/docs" 
+              className="text-[20px] text-white hover:text-accent transition-colors duration-200 relative group"
+            >
+              Docs
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
+            </Link>
           </div>
 
           {/* CTA */}

@@ -2,7 +2,16 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { HiArrowLeft, HiArrowRight } from "react-icons/hi2";
+import { HiArrowLeft, HiArrowRight, HiPlus, HiStar } from "react-icons/hi2";
+
+type RewardsData = {
+  total: number;
+  history: Array<{
+    event: string;
+    points: number;
+    time: number;
+  }>;
+};
 
 export default function MerchantDashboard() {
   const [links, setLinks] = useState<Array<{
@@ -73,6 +82,18 @@ export default function MerchantDashboard() {
   const pendingPayments = links.filter(link => link.status === 'pending').length;
   const completedPayments = links.filter(link => link.status === 'paid').length;
 
+  // Get rewards
+  const [rewards, setRewards] = useState<RewardsData>({ total: 0, history: [] });
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const rewardsData = globalThis.localStorage.getItem("flashpay_rewards");
+      if (rewardsData) {
+        setRewards(JSON.parse(rewardsData));
+      }
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-background">
       {/* Header */}
@@ -102,16 +123,36 @@ export default function MerchantDashboard() {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-card p-6 rounded-xl border border-border/30">
-            <h3 className="text-muted-foreground text-sm font-medium">Total Revenue</h3>
-            <p className="text-2xl font-bold mt-1">${totalPaid.toFixed(2)}</p>
+            <h3 className="text-muted-foreground text-sm font-medium">Total Revenue (APT)</h3>
+            <div className="relative group">
+              <p className="text-2xl font-bold mt-1">
+                {totalPaid < 0.01 ? totalPaid.toFixed(12).replace(/\.?0+$/, '') : totalPaid.toFixed(2)} APT
+              </p>
+              {totalPaid < 0.01 && (
+                <div className="absolute z-10 hidden group-hover:block w-48 p-2 mt-1 text-xs bg-gray-800 text-white rounded shadow-lg">
+                  {totalPaid} APT
+                </div>
+              )}
+            </div>
           </div>
           <div className="bg-card p-6 rounded-xl border border-border/30">
             <h3 className="text-muted-foreground text-sm font-medium">Pending Payments</h3>
             <p className="text-2xl font-bold mt-1">{pendingPayments}</p>
           </div>
           <div className="bg-card p-6 rounded-xl border border-border/30">
-            <h3 className="text-muted-foreground text-sm font-medium">Completed</h3>
+            <h3 className="text-muted-foreground text-sm font-medium">
+              Completed
+            </h3>
             <p className="text-2xl font-bold mt-1">{completedPayments}</p>
+          </div>
+          <div className="bg-card p-6 rounded-xl border border-border/30">
+            <h3 className="text-muted-foreground text-sm font-medium flex items-center gap-1">
+              <HiStar className="text-yellow-400" />
+              Rewards
+            </h3>
+            <p className="text-2xl font-bold mt-1 text-yellow-400">
+              {rewards.total || 0} pts
+            </p>
           </div>
         </div>
 

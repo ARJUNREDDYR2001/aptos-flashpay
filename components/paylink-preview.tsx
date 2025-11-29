@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { HiArrowLeft } from "react-icons/hi2"
+import QRCode from "react-qr-code"
 
 interface PayLinkPreviewProps {
   data: {
@@ -40,19 +41,17 @@ export default function PayLinkPreview({ data, onBack }: PayLinkPreviewProps) {
         <div className="flex flex-col items-center gap-6">
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-secondary/20 rounded-2xl blur-xl"></div>
-            <div className="relative bg-white rounded-2xl p-8 sm:p-12">
-              <svg className="w-56 h-56 sm:w-64 sm:h-64" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <rect width="200" height="200" fill="white" />
-                <rect x="20" y="20" width="40" height="40" fill="black" />
-                <rect x="60" y="20" width="40" height="40" fill="black" />
-                <rect x="140" y="20" width="40" height="40" fill="black" />
-                <rect x="20" y="60" width="40" height="40" fill="black" />
-                <rect x="140" y="60" width="40" height="40" fill="black" />
-                <rect x="20" y="140" width="40" height="40" fill="black" />
-                <rect x="60" y="140" width="40" height="40" fill="black" />
-                <rect x="140" y="140" width="40" height="40" fill="black" />
-                <circle cx="100" cy="100" r="20" fill="black" opacity="0.8" />
-              </svg>
+            <div className="relative bg-white rounded-2xl p-8 sm:p-12 flex items-center justify-center">
+              <div className="w-56 h-56 sm:w-64 sm:h-64">
+                <QRCode
+                  value={paylink}
+                  size={256}
+                  level="H"
+                  fgColor="#000000"
+                  bgColor="#ffffff"
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
             </div>
           </div>
 
