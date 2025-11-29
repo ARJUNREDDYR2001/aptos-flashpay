@@ -68,52 +68,54 @@ export default function ConnectAndPay({ paylink }: { paylink: any }) {
   //   }
   // };
 
-  const payNow = async () => {
-    setStatus("processing");
+const payNow = async () => {
+  setStatus("processing");
 
-    const petra = window.petra;
-    if (!petra) {
-      alert("Install Petra Wallet first");
-      return;
-    }
+  const petra = window.petra;
+  if (!petra) {
+    alert("Install Petra Wallet first");
+    return;
+  }
 
-    let account = address;
-    if (!account) {
-      const res = await petra.connect();
-      account = res.address;
-      setAddress(res.address);
-    }
+  let account = address;
+  if (!account) {
+    const res = await petra.connect();
+    account = res.address;
+    setAddress(res.address);
+  }
 
-    const amountAtomic = Math.floor(Number(paylink.amount) * 1e6);
+  // APT → octas (1 APT = 1e8)
+  const amountOctas = Math.floor(Number(paylink.amount) * 1e8);
 
-    // USDC FA metadata type — REQUIRED for FAv2
-    const USDC_FA_METADATA =
-      "0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832::usdc::USDC";
+  try {
+    const tx = await petra.signAndSubmitTransaction({
+      payload: {
+        type: "entry_function_payload",
+        function: "0x1::coin::transfer",
+        type_arguments: ["0x1::aptos_coin::AptosCoin"],
+        arguments: [
+          paylink.vendorAddress,
+          String(amountOctas),
+        ],
+      },
+    });
 
-    // USDC Object ID from faucet
-    const USDC_OBJECT_ID =
-      "0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832";
+    // Update local storage first
+    const list = JSON.parse(localStorage.getItem("flashpay_links") || "[]");
+    const update = list.map((p: any) =>
+      p.id === paylink.id ? { ...p, status: "paid", txHash: tx.hash } : p
+    );
+    localStorage.setItem("flashpay_links", JSON.stringify(update));
 
-    try {
-      const tx = await petra.signAndSubmitTransaction({
-        payload: {
-          type: "entry_function_payload",
-          function: "0x1::aptos_account::transfer",
-          type_arguments: [],
-          arguments: [
-            paylink.vendorAddress,
-            Math.floor(Number(paylink.amount) * 1e8), // APT uses 8 decimals
-          ],
-        },
-      });
+    // Redirect to success page with transaction details
+    window.location.href = `/success?tx=${tx.hash}&amount=${paylink.amount}&vendor=${encodeURIComponent(paylink.vendorAddress || 'Vendor')}`;
 
-      setTxHash(tx.hash);
-      setStatus("success");
-    } catch (err) {
-      console.error("TX ERROR:", err);
-      setStatus("error");
-    }
-  };
+  } catch (err) {
+    console.error("TX ERROR:", err);
+    setStatus("error");
+  }
+};
+
 
   return (
     <div className="space-y-4">
@@ -139,17 +141,10 @@ export default function ConnectAndPay({ paylink }: { paylink: any }) {
         {status === "processing" ? "Processing..." : "Pay Now"}
       </button>
 
-      {status === "success" && (
-        <div className="bg-green-100 text-green-600 p-4 rounded-xl">
-          Payment Successful! <br />
-          <a
-            href={`https://explorer.aptoslabs.com/txn/${txHash}?network=testnet`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            View in Explorer
-          </a>
+      {status === "processing" && (
+        <div className="bg-blue-50 text-blue-600 p-4 rounded-xl flex items-center justify-center gap-2">
+          <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          Processing transaction...
         </div>
       )}
 
