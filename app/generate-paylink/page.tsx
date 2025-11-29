@@ -2,21 +2,29 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { v4 as uuidv4 } from "uuid"
+import { useRouter } from "next/navigation"
 import { HiArrowLeft } from "react-icons/hi2"
 import PayLinkForm from "@/components/paylink-form"
-import PayLinkPreview from "@/components/paylink-preview"
 
-export default function GeneratePayLink() {
-  const [step, setStep] = useState<"form" | "qr">("form")
-  const [formData, setFormData] = useState({
-    amount: "",
-    currency: "USDC",
-    vendorAddress: "0xabc...xyz",
-  })
+export default function GeneratePaylinkPage() {
+  const router = useRouter()
 
-  const handleSubmit = (data: typeof formData) => {
-    setFormData(data)
-    setStep("qr")
+  const handleSubmit = (data: { amount: string; currency: string; vendorAddress: string }) => {
+    const id = uuidv4()
+
+    const paylink = {
+      id,
+      ...data,
+      status: "pending",
+      createdAt: Date.now(),
+    }
+
+    const existing = JSON.parse(localStorage.getItem("flashpay_links") || "[]")
+    existing.push(paylink)
+    localStorage.setItem("flashpay_links", JSON.stringify(existing))
+
+    router.push(`/payment-status/${id}`)
   }
 
   return (
@@ -37,8 +45,7 @@ export default function GeneratePayLink() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-        {step === "form" && <PayLinkForm onSubmit={handleSubmit} />}
-        {step === "qr" && <PayLinkPreview data={formData} onBack={() => setStep("form")} />}
+        <PayLinkForm onSubmit={handleSubmit} />
       </div>
     </div>
   )
