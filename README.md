@@ -1,38 +1,170 @@
-# aptos-flashpay
-Aptos FlashPay is a QR-based instant payment request generator built for the Aptos IBW Hackathon. It allows anyone to create fast, secure, and user-friendly stablecoin payment links using the Aptos blockchain.  This project focuses on speed, simple UX, and real-world merchant utility.
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 FlashPay – Instant Payment Links on Aptos
 
-## Getting Started
+FlashPay is a Web3 payment-link generator built on Aptos Testnet, enabling merchants to create instant paylinks that customers can:
+- Scan via QR code
+- Open on mobile or desktop
+- Pay using Aptos wallets (Petra, Martian, Rise, etc.)
 
-First, run the development server:
+FlashPay supports:
+✔ Wallet connection  
+✔ APT payments  
+✔ QR Code sharing  
+✔ Dynamic payment status  
+✔ Merchant dashboard  
+✔ OpenAI-powered chatbot assistant  
+✔ Works on mobile & desktop
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Features
+
+### 🔗 1. Generate Payment Links
+Merchants can create one-time or multi-use payment links containing:
+- Amount in APT
+- Vendor address
+- Auto-generated link
+- QR code for sharing
+
+### 💸 2. Pay With Aptos Wallet
+Customers can:
+- Scan the QR
+- Land on a payment page
+- Click Pay Now
+- Sign an APT transfer directly from wallet
+- View the transaction on Aptos Explorer
+
+### 📊 3. Merchant Dashboard
+The dashboard displays:
+- List of paylinks
+- Status updates (Pending, Paid, Failed)
+- Transaction hashes
+- Amounts
+- Timestamp
+
+### 🤖 4. Built-in AI Chatbot
+A floating AI assistant appears on all pages.
+
+**Capabilities:**
+- Answer questions about Aptos, FlashPay, wallets, QR payments
+- Explain failures or gas fee issues
+- 24/7 support
+- Uses OpenAI API (secure backend route)
+
+### 📱 5. Mobile-Ready
+All flows work seamlessly on:
+- Petra mobile
+- Aptos browser wallets
+- Camera QR scanning
+- iOS & Android
+
+## 🛠 Tech Stack
+
+| Layer | Tools |
+|-------|-------|
+| **Frontend** | Next.js 14 (App Router), TailwindCSS, Radix UI |
+| **Blockchain** | Aptos Testnet, Petra Wallet |
+| **Payments** | APT transfer via wallet signAndSubmitTransaction |
+| **QR Codes** | react-qr-code |
+| **AI Chatbot** | OpenAI API (ChatGPT 4o-mini) |
+| **UI Enhancements** | Glassmorphism, icons, animations |
+
+## 📂 Project Structure
+
+```
+aptos-flashpay/
+ ├── app/
+ │   ├── generate-paylink/
+ │   ├── merchant-dashboard/
+ │   ├── payment-status/[id]/
+ │   ├── success/
+ │   └── api/
+ │       └── support-chat/route.ts     # Secure backend chatbot
+ │
+ ├── components/
+ │   ├── ChatbotWidget.tsx             # Floating AI assistant
+ │   ├── ConnectAndPay.tsx             # APT wallet payment UI
+ │   └── ...
+ │
+ ├── public/
+ ├── package.json
+ ├── README.md
+ └── .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⚙️ Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/<your-username>/flashpay.git
+cd flashpay
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2️⃣ Install dependencies
+```bash
+npm install
+```
 
-## Learn More
+### 3️⃣ Environment variables
+Create `.env.local`:
+```env
+OPENAI_API_KEY=your_openai_key_here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+⚠️ **Never expose API key in client code** — this project uses a protected API Route.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4️⃣ Run locally
+```bash
+npm run dev
+```
+Open http://localhost:3000
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 💳 Payments Flow
+1. Merchant enters amount
+2. App generates paylink + QR code
+3. Customer visits /payment-status/[id]
+4. User connects wallet
+5. User clicks Pay Now
+6. Wallet opens → user signs APT transfer
+7. Payment status changes to PAID
+8. Merchant dashboard updates
+9. User can view tx on Aptos Explorer
 
-## Deploy on Vercel
+## 🤖 Chatbot Integration
+- **API Route**: `app/api/support-chat/route.ts`
+- **Uses**: GPT-4o-mini
+- **System prompt**: "FlashPay Assistant"
+- **UI component**: `components/ChatbotWidget.tsx`
+- **Injected globally in**: `app/layout.tsx`
+- **No API key exposure** — everything routed through backend.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📤 Deployment (Netlify / Vercel)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Netlify Deployment Steps
+1. Push repo to GitHub
+2. Create new site → "Import from GitHub"
+3. Build command:
+   ```
+   npm run build
+   ```
+4. Publish directory:
+   ```
+   .next
+   ```
+5. Add environment variables:
+   - `OPENAI_API_KEY`
+   - `NEXT_PUBLIC_APP_URL`
+6. Deploy 🚀
+
+QR Code URLs will automatically point to your deployed domain.
+
+## 🧪 Testing
+- Try generating a paylink → open on your phone
+- Use Petra wallet mobile to pay
+- Confirm APT deduction
+- Merchant dashboard updates
+- Chatbot responds to user queries
+
+## 📄 License
+MIT
+
+---
+Built with ❤️ for the Aptos ecosystem
