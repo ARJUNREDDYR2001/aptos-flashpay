@@ -1,5 +1,7 @@
 # 🚀 FlashPay – Instant Payment Links on Aptos
 
+🔗 Live Demo: https://aptosflashpay.netlify.app/
+
 FlashPay is a Web3 payment-link generator built on Aptos Testnet, enabling merchants to create instant paylinks that customers can:
 - Scan via QR code
 - Open on mobile or desktop
