@@ -19,7 +19,7 @@ export default function Footer() {
               </div>
               <span className="font-bold">FlashPay</span>
             </div>
-            <p className="text-sm text-muted-foreground">Instant USDC payments on Aptos.</p>
+            <p className="text-sm text-muted-foreground">Instant APT payments on Aptos.</p>
           </div>
 
           {/* Links */}

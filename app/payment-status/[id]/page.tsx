@@ -20,7 +20,7 @@ export default function PaymentStatusPage() {
       try {
         const list = JSON.parse(localStorage.getItem("flashpay_links") || "[]");
         const found = list.find((p: any) => p && p.id === id);
-        
+
         if (found) {
           // Small delay to ensure smooth transition
           const timer = setTimeout(() => {
@@ -30,10 +30,10 @@ export default function PaymentStatusPage() {
           return () => clearTimeout(timer);
         } else {
           // If not found, keep showing loader
-          console.log('Payment link not found');
+          console.log("Payment link not found");
         }
       } catch (err) {
-        console.error('Error loading payment link:', err);
+        console.error("Error loading payment link:", err);
       } finally {
         setIsLoading(false);
       }
@@ -45,8 +45,11 @@ export default function PaymentStatusPage() {
   }, [id]);
 
   // Use environment variable or current origin
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 
-    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+  const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (typeof window !== "undefined"
+      ? window.location.origin
+      : "http://localhost:3000");
 
   const paymentUrl = `${baseUrl}/payment-status/${id}`;
 
@@ -57,10 +60,9 @@ export default function PaymentStatusPage() {
       setCopyMsg("Link copied!");
       setTimeout(() => setCopyMsg(""), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
-
 
   // Always show loading state until payment link is loaded
   if (isLoading || !paylink) {
@@ -75,8 +77,19 @@ export default function PaymentStatusPage() {
   return (
     <div>
       <Navbar />
-      <div className="max-w-4xl mx-auto pt-24 pb-12 px-4">
-        <h1 className="text-3xl font-bold mb-8 text-accent text-center">Payment Request</h1>
+      <div className="mt-8 pt-15 pl-5 sm:pl-66  sm:pt-24 text-center flex justify-start">
+        <Link
+          href="/merchant-dashboard"
+          className="inline-flex items-center gap-1 text-sm text-accent hover:underline"
+        >
+          <span>←</span> Back to Dashboard
+        </Link>
+      </div>
+
+      <div className="max-w-4xl mx-auto pt-2 pb-12 px-4">
+        <h1 className="text-3xl font-bold mb-8 text-accent text-center">
+          Payment Request
+        </h1>
 
         <div className="bg-glass p-6 rounded-2xl border border-accent/20 shadow-xl">
           {/* Top Section - QR Code and Connect Wallet Side by Side */}
@@ -84,7 +97,7 @@ export default function PaymentStatusPage() {
             {/* Left - QR Code */}
             <div className="w-full md:w-1/2 flex flex-col items-center">
               <div className="p-4 bg-white rounded-xl shadow-lg">
-                <QRCode 
+                <QRCode
                   value={paymentUrl}
                   size={180}
                   level="H"
@@ -107,7 +120,9 @@ export default function PaymentStatusPage() {
             {/* Right - Connect & Pay */}
             <div className="w-full md:w-1/2">
               <div className="bg-white/5 p-6 rounded-xl h-full">
-                <h3 className="text-xl font-semibold mb-6 text-center">Complete Payment</h3>
+                <h3 className="text-xl font-semibold mb-6 text-center">
+                  Complete Payment
+                </h3>
                 <div className="flex justify-center">
                   <ConnectAndPay paylink={paylink} />
                 </div>
@@ -125,25 +140,26 @@ export default function PaymentStatusPage() {
             </div>
 
             <div className="bg-white/5 p-4 rounded-xl">
-              <p className="text-sm text-muted-foreground mb-1">Vendor Address</p>
-              <p className="text-sm font-mono break-all">{paylink.vendorAddress}</p>
+              <p className="text-sm text-muted-foreground mb-1">
+                Vendor Address
+              </p>
+              <p className="text-sm font-mono break-all">
+                {paylink.vendorAddress}
+              </p>
             </div>
 
             <div className="bg-white/5 p-4 rounded-xl">
               <p className="text-sm text-muted-foreground mb-1">Status</p>
-              <p className={`font-semibold ${paylink.status === "paid" ? "text-green-500" : "text-yellow-500"}`}>
+              <p
+                className={`font-semibold ${
+                  paylink.status === "paid"
+                    ? "text-green-500"
+                    : "text-yellow-500"
+                }`}
+              >
                 {paylink.status}
               </p>
             </div>
-          </div>
-
-          <div className="mt-8 text-center">
-            <Link
-              href="/merchant-dashboard"
-              className="inline-flex items-center gap-1 text-sm text-accent hover:underline"
-            >
-              <span>←</span> Back to Dashboard
-            </Link>
           </div>
         </div>
       </div>
